@@ -1,4 +1,4 @@
-### 1. Запуск Cassandra
+### 1. Запуск
 ```
 make compose-up
 ```
