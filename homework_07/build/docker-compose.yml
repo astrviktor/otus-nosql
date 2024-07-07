@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    hostname: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass password
+    volumes:
+      - redis:/data
+
+  redisinsight:
+    image: redislabs/redisinsight:1.13.1
+    ports:
+      - '8001:8001'
+
+  service:
+    image: astrviktor/service:1.0.0
+    container_name: service
+    hostname: service
+    ports:
+      - "8002:8002"
+    environment:
+      SERVICE_SERVICE_HOST: "0.0.0.0"
+      SERVICE_SERVICE_PORT: "8002"
+      SERVICE_SERVICE_DATASIZE: "20480"
+      SERVICE_SERVICE_REDIS_HOST: "redis"
+      SERVICE_SERVICE_REDIS_PORT: "6379"
+      SERVICE_SERVICE_REDIS_PASSWORD: "password"
+
+volumes:
+  redis:
+    driver: local
