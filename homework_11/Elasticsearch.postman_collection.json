@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "cf5a617d-9e44-47ea-9836-91a053606e89",
+		"name": "Elasticsearch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10578551"
+	},
+	"item": [
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9200/_cluster/health?pretty",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_cluster",
+						"health"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create index with mapping",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"settings\": {\n        \"analysis\": {\n            \"filter\": {\n                \"ru_stop\": {\n                    \"type\": \"stop\",\n                    \"stopwords\": \"_russian_\"\n                },\n                \"ru_stemmer\": {\n                    \"type\": \"stemmer\",\n                    \"language\": \"russian\"\n                }\n            },\n            \"analyzer\": {\n                \"my_russian\": {\n                    \"tokenizer\": \"standard\",\n                    \"filter\": [\n                        \"lowercase\",\n                        \"ru_stop\",\n                        \"ru_stemmer\"\n                    ]\n                }\n            }\n        }\n    },\n    \"mappings\": {\n        \"properties\": {\n            \"text\": {\n                \"type\": \"text\",\n                \"analyzer\": \"my_russian\"\n            }\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9200/test_index",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"test_index"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"create\":{\"_index\":\"test_index\",\"_id\":\"1\"}}\n{\"text\":\"моя мама мыла посуду а кот жевал сосиски\"}\n{\"create\":{\"_index\":\"test_index\",\"_id\":\"2\"}}\n{\"text\":\"рама была отмыта и вылизана котом\"}\n{\"create\":{\"_index\":\"test_index\",\"_id\":\"3\"}}\n{\"text\":\"мама мыла раму\"}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9200/_bulk",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_bulk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "request all data",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"match_all\": {}\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9200/test_index/_search",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"test_index",
+						"_search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"match\": {\n            \"text\": \"мама ела сосиски\"\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9200/test_index/_search",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"test_index",
+						"_search"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
