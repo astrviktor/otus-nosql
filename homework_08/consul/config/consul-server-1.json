@@ -1,0 +1,18 @@
+{
+  "node_name": "consul-server-1",
+  "server": true,
+  "ui_config": {
+    "enabled" : true
+  },
+  "data_dir": "/consul/data",
+  "addresses": {
+    "http" : "0.0.0.0"
+  },
+  "retry_join":[
+    "consul-server-2",
+    "consul-server-3"
+  ],
+  "verify_incoming": false,
+  "verify_outgoing": false,
+  "verify_server_hostname": false
+}

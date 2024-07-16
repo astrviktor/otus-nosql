@@ -1,3 +1,5 @@
+## ETCD
+
 ### 1. Запуск etcd
 ```
 make etcd-up
@@ -64,3 +66,38 @@ value1
 ```
 make etcd-down
 ```
+
+## CONSUL
+
+### 1. Запуск consul
+```
+make consul-up
+```
+
+### 2. Проверка consul
+```
+curl http://127.0.0.1:8501/v1/status/peers
+["172.26.0.3:8300","172.26.0.2:8300","172.26.0.4:8300"]
+
+curl http://127.0.0.1:8501/v1/status/leader
+"172.26.0.3:8300"
+
+```
+
+### 3. Проверка отказоустойчивости consul
+
+```
+docker stop consul-server-1
+
+curl http://127.0.0.1:8502/v1/status/peers
+["172.26.0.2:8300","172.26.0.4:8300"]
+
+curl http://127.0.0.1:8502/v1/status/leader
+"172.26.0.4:8300"
+```
+
+### 4. Остановка consul
+```
+make consul-down
+```
+
